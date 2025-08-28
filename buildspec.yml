@@ -7,7 +7,7 @@ phases:
     commands:
       - echo "Installing dependencies..."
       - pip install --upgrade pip
-      - if [ -f "requirements.txt" ]; then pip install -r requirements.txt -t .; else echo "No requirements.txt found"; fi
+      - if [ -f "requirements.txt" ]; then pip install -r requirements.txt; fi
 
   build:
     commands:
@@ -18,9 +18,15 @@ phases:
   post_build:
     commands:
       - echo "Creating deployment package..."
-      # Only include necessary files for Lambda
-      - zip -r deployment-package.zip lambda_function.py
-      - if [ -f "requirements.txt" ]; then zip -r deployment-package.zip . -x "*.git*" "*.DS_Store" "buildspec.yml" "README.md" ".gitignore"; fi
+      - echo "Current directory contents:"
+      - ls -la
+      # Create zip with ONLY the necessary files at root level
+      - zip deployment-package.zip lambda_function.py
+      - if [ -f "requirements.txt" ]; then zip deployment-package.zip requirements.txt; fi
+      # Add any installed packages (if they exist)
+      - if [ -d "__pycache__" ]; then rm -rf __pycache__; fi
+      - echo "Zip contents:"
+      - zipinfo -1 deployment-package.zip
 
 artifacts:
   files:
