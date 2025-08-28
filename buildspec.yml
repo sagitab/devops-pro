@@ -1,32 +1,10 @@
 version: 0.2
 
 phases:
-  install:
-    runtime-versions:
-      python: 3.9
-    commands:
-      - echo "Installing dependencies..."
-      - pip install --upgrade pip
-      - if [ -f "requirements.txt" ]; then pip install -r requirements.txt; fi
-
   build:
     commands:
-      - echo "Building the Lambda function..."
-      - python -m py_compile lambda_function.py
-      - echo "Build completed successfully"
-
-  post_build:
-    commands:
       - echo "Creating deployment package..."
-      - echo "Current directory contents:"
-      - ls -la
-      # Create zip with ONLY the necessary files at root level
       - zip deployment-package.zip lambda_function.py
-      - if [ -f "requirements.txt" ]; then zip deployment-package.zip requirements.txt; fi
-      # Add any installed packages (if they exist)
-      - if [ -d "__pycache__" ]; then rm -rf __pycache__; fi
-      - echo "Zip contents:"
-      - zipinfo -1 deployment-package.zip
 
 artifacts:
   files:
