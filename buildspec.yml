@@ -7,7 +7,8 @@ phases:
     commands:
       - echo "Installing dependencies..."
       - pip install --upgrade pip
-      - pip install -r requirements.txt -t .
+      - echo "Checking for requirements.txt..."
+      - if [ -f "requirements.txt" ]; then pip install -r requirements.txt -t .; else echo "No requirements.txt found, skipping package installation"; fi
 
   build:
     commands:
@@ -18,9 +19,8 @@ phases:
   post_build:
     commands:
       - echo "Creating deployment package..."
-      - zip -r deployment-package.zip . -x "*.git*" "*.DS_Store" "buildspec.yml" "README.md"
+      - zip -r deployment-package.zip . -x "*.git*" "*.DS_Store" "buildspec.yml" "README.md" ".gitignore"
 
 artifacts:
   files:
     - deployment-package.zip
-  discard-paths: no
