@@ -4,8 +4,8 @@ phases:
   build:
     commands:
       - echo "Creating deployment package..."
-      - ls -l
-      - zip -r deployment-package.zip .
+      - zip deployment-package.zip lambda_function.py
+
 artifacts:
   files:
     - deployment-package.zip
